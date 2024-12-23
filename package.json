@@ -11,6 +11,7 @@
     "type-check": "vue-tsc --build"
   },
   "dependencies": {
+    "@element-plus/icons-vue": "^2.3.1",
     "@unocss/reset": "^0.65.2",
     "axios": "^1.7.9",
     "element-plus": "^2.9.1",
