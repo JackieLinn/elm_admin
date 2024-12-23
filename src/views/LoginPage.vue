@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {Lock, User} from "@element-plus/icons-vue";
+import router from "@/router";
 </script>
 
 <template>
@@ -47,7 +48,7 @@ import {Lock, User} from "@element-plus/icons-vue";
           <span class="text-gray text-[0.9em]">没有账号</span>
         </el-divider>
         <div class="mt-[1vw]">
-          <el-button type="warning" plain class="w-[80vw]">注册账号</el-button>
+          <el-button @click="router.push('/register')" type="warning" plain class="w-[80vw]">注册账号</el-button>
         </div>
       </div>
     </div>
