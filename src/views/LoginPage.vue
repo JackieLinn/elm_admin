@@ -36,7 +36,7 @@ import router from "@/router";
             </el-form-item>
           </el-col>
           <el-col :span="12" class="text-right">
-            <el-link>忘记密码？</el-link>
+            <el-link @click="router.push('/reset')">忘记密码？</el-link>
           </el-col>
         </el-row>
       </el-form>

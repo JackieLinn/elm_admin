@@ -49,7 +49,7 @@ import router from "@/router";
         </el-form-item>
         <el-form-item prop="code">
           <el-row :gutter="10" class="w-full">
-            <el-col :span="18">
+            <el-col :span="16">
               <el-input :maxlength="6" type="text" placeholder="请输入验证码">
                 <template #prefix>
                   <el-icon>
@@ -58,7 +58,7 @@ import router from "@/router";
                 </template>
               </el-input>
             </el-col>
-            <el-col :span="5">
+            <el-col :span="6">
               <el-button type="success">获取验证码</el-button>
             </el-col>
           </el-row>
