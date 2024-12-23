@@ -8,6 +8,9 @@ import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import Icons from 'unplugin-icons/vite'
 import IconsResolver from 'unplugin-icons/resolver'
+import {ElementPlusResolver} from 'unplugin-vue-components/resolvers'
+
+import UnoCSS from 'unocss/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -20,6 +23,7 @@ export default defineConfig({
     Components({
       resolvers: [
         IconsResolver(),
+        ElementPlusResolver()
       ],
     }),
     Icons({
@@ -29,6 +33,7 @@ export default defineConfig({
       defaultStyle: '',
       defaultClass: '',
     }),
+    UnoCSS()
   ],
   resolve: {
     alias: {
