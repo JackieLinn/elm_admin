@@ -1,6 +1,33 @@
 <script setup lang="ts">
 import {Lock, User} from "@element-plus/icons-vue";
 import router from "@/router";
+import {login} from "@/net/index.ts";
+
+const formRef = ref()
+
+const form = reactive({
+  username: '',
+  password: '',
+  remember: false,
+})
+
+const rules = {
+  username: [
+    {required: true, message: '请输入用户名'}
+  ],
+  password: [
+    {required: true, message: '请输入密码'}
+  ]
+}
+
+const userLogin = ()=>  {
+  formRef.value.validate((isValid) => {
+    if (isValid) {
+      login(form.username, form.password, form.remember,
+          () => router.push('/home'))
+    }
+  });
+}
 </script>
 
 <template>
@@ -10,9 +37,9 @@ import router from "@/router";
     </div>
     <div class="mt-[10vw] flex justify-center items-center text-3xl font-semibold">登录</div>
     <div class="mt-[4vw] ml-[6vw] mr-[6vw]">
-      <el-form>
+      <el-form :model="form" :rules="rules" ref="formRef">
         <el-form-item prop="username">
-          <el-input maxlength="30" type="text" placeholder="用户名/邮箱" class="mt-[5px]">
+          <el-input v-model="form.username" maxlength="30" type="text" placeholder="用户名/邮箱" class="mt-[5px]">
             <template #prefix>
               <el-icon>
                 <User/>
@@ -21,7 +48,7 @@ import router from "@/router";
           </el-input>
         </el-form-item>
         <el-form-item prop="password">
-          <el-input maxlength="20" type="password" placeholder="密码" class="mt-[5px]">
+          <el-input v-model="form.password" maxlength="20" type="password" placeholder="密码" class="mt-[5px]">
             <template #prefix>
               <el-icon>
                 <Lock/>
@@ -32,7 +59,7 @@ import router from "@/router";
         <el-row class="mt-[5px]">
           <el-col :span="12" class="text-left">
             <el-form-item prop="remember">
-              <el-checkbox label="记住我"/>
+              <el-checkbox v-model="form.remember" label="记住我"/>
             </el-form-item>
           </el-col>
           <el-col :span="12" class="text-right">
@@ -42,7 +69,7 @@ import router from "@/router";
       </el-form>
       <div class="flex justify-center items-center flex-col">
         <div class="mt-[1vw]">
-          <el-button type="success" plain class="w-[80vw]">立即登录</el-button>
+          <el-button @click="userLogin" type="success" plain class="w-[80vw]">立即登录</el-button>
         </div>
         <el-divider>
           <span class="text-gray text-[0.9em]">没有账号</span>
