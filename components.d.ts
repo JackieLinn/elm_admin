@@ -47,6 +47,7 @@ declare module 'vue' {
     IOcticonTriangleDown24: typeof import('~icons/octicon/triangle-down24')['default']
     IPhMagnifyingGlassBold: typeof import('~icons/ph/magnifying-glass-bold')['default']
     ITdesignCompass: typeof import('~icons/tdesign/compass')['default']
+    OrderHeader: typeof import('./src/components/Order/OrderHeader.vue')['default']
     Recommend: typeof import('./src/components/Home/Recommend.vue')['default']
     RecommendBusiness: typeof import('./src/components/Home/RecommendBusiness.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

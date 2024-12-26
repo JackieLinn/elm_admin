@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import router from "@/router/index.ts";
+
 const cartQuantity = 3;
 const cartAmount = 12.88;
 const deliveryFee = 3;
@@ -19,7 +21,8 @@ const deliveryFee = 3;
       </div>
     </div>
     <div class="w-[34%]">
-      <div class="w-full h-full bg-[#38CA73] text-white text-[4.5vw] font-bold flex justify-center items-center cursor-pointer">
+      <div @click="router.push('/order')"
+          class="w-full h-full bg-[#38CA73] text-white text-[4.5vw] font-bold flex justify-center items-center cursor-pointer">
         去结算
       </div>
     </div>
