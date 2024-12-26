@@ -19,6 +19,7 @@ declare module 'vue' {
     ElRow: typeof import('element-plus/es')['ElRow']
     ElStep: typeof import('element-plus/es')['ElStep']
     ElSteps: typeof import('element-plus/es')['ElSteps']
+    FoodCategory: typeof import('./src/components/Home/FoodCategory.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     HomeHeader: typeof import('./src/components/Home/HomeHeader.vue')['default']
     IconCommunity: typeof import('./src/components/icons/IconCommunity.vue')['default']
