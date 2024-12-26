@@ -8,6 +8,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     Banner: typeof import('./src/components/Home/Banner.vue')['default']
+    BusinessListHeader: typeof import('./src/components/BusinessList/BusinessListHeader.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElCheckbox: typeof import('element-plus/es')['ElCheckbox']
     ElCol: typeof import('element-plus/es')['ElCol']
@@ -30,6 +31,7 @@ declare module 'vue' {
     IconTooling: typeof import('./src/components/icons/IconTooling.vue')['default']
     IIcOutlineLocationOn: typeof import('~icons/ic/outline-location-on')['default']
     IIcRoundPerson: typeof import('~icons/ic/round-person')['default']
+    IMaterialSymbolsChevronLeft: typeof import('~icons/material-symbols/chevron-left')['default']
     IMaterialSymbolsFilterAltOffOutlineRounded: typeof import('~icons/material-symbols/filter-alt-off-outline-rounded')['default']
     IMaterialSymbolsHouse: typeof import('~icons/material-symbols/house')['default']
     IMaterialSymbolsHouseRounded: typeof import('~icons/material-symbols/house-rounded')['default']

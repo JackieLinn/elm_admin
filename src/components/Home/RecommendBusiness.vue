@@ -35,6 +35,10 @@ const fetchRecommendBusiness = async () => {
   }
 }
 
+const changeToBusinessList = (orderTypeId: number) => {
+  router.push({ name: 'businessList', query: { orderTypeId: orderTypeId } });
+};
+
 onMounted(() => {
   fetchRecommendBusiness()
 })
@@ -49,6 +53,7 @@ onMounted(() => {
           v-for="business in businesses"
           :key="business.businessId"
           class="w-full border-b border-gray-300 p-[1.5vw] flex cursor-pointer user-select-none"
+          @click="changeToBusinessList(0)"
       >
         <img :src="business.businessImg || '/assets/img/sj01.png'"
              :alt="business.businessName"

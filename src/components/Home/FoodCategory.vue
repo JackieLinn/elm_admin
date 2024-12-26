@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
+import router from "@/router/index.ts";
 
 interface Category {
   id: number
@@ -43,6 +44,10 @@ const fetchCategories = async () => {
   }
 }
 
+const changeToBusinessList = (orderTypeId: number) => {
+  router.push({ name: 'businessList', query: { orderTypeId: orderTypeId } });
+};
+
 onMounted(() => {
   fetchCategories()
 })
@@ -54,6 +59,7 @@ onMounted(() => {
         v-for="category in categories"
         :key="category.id"
         class="w-[18vw] h-[20vw] flex flex-col justify-center items-center user-select-none cursor-pointer"
+        @click="changeToBusinessList(category.id)"
     >
       <img :src="getCategoryImage(category.id)" :alt="category.name"
            class="w-[16vw] h-[16vw] object-cover"/>
