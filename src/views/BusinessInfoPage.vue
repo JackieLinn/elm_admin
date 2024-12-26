@@ -3,6 +3,7 @@ import BusinessInfoHeader from "@/components/BusinessInfo/BusinessInfoHeader.vue
 import {useRoute, useRouter } from "vue-router";
 import axios from 'axios'
 import type {BusinessVO} from "@/type/businessVO.ts";
+import Cart from "@/components/BusinessInfo/Cart.vue";
 
 const route = useRoute()
 const router = useRouter()
@@ -61,6 +62,8 @@ onMounted(() => {
       <span class="text-[3.5vw] text-gray-600 mt-[1vw]">{{ business.businessExplain }}</span>
     </div>
   </div>
+
+  <Cart/>
 </template>
 
 <style scoped>
