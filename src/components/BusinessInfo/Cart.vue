@@ -19,7 +19,7 @@ const deliveryFee = 3;
       </div>
     </div>
     <div class="w-[34%]">
-      <div class="w-full h-full bg-[#38CA73] text-white text-[4.5vw] font-bold flex justify-center items-center cursor-pointer" @click="location.href='order.html'">
+      <div class="w-full h-full bg-[#38CA73] text-white text-[4.5vw] font-bold flex justify-center items-center cursor-pointer">
         去结算
       </div>
     </div>
