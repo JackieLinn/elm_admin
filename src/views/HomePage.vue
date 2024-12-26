@@ -4,6 +4,7 @@ import Search from "@/components/Home/Search.vue";
 import FoodCategory from "@/components/Home/FoodCategory.vue";
 import Banner from "@/components/Home/Banner.vue";
 import SuperMember from "@/components/Home/SuperMember.vue";
+import Recommend from "@/components/Home/Recommend.vue";
 </script>
 
 <template>
@@ -12,6 +13,7 @@ import SuperMember from "@/components/Home/SuperMember.vue";
   <FoodCategory/>
   <Banner/>
   <SuperMember/>
+  <Recommend/>
 </template>
 
 <style scoped>
