@@ -2,15 +2,7 @@
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
-
-interface BusinessVO {
-  businessId: number
-  businessName: string
-  businessExplain: string
-  businessImg: string
-  startPrice: number
-  deliveryPrice: number
-}
+import type {BusinessVO} from "@/type/businessVO.ts";
 
 const businesses = ref<BusinessVO[]>([])
 const loading = ref(true)

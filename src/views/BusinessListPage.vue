@@ -3,15 +3,7 @@ import BusinessListHeader from "@/components/BusinessList/BusinessListHeader.vue
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios'
-
-interface BusinessVO {
-  businessId: number
-  businessName: string
-  businessExplain: string
-  businessImg: string
-  startPrice: number
-  deliveryPrice: number
-}
+import type {BusinessVO} from "@/type/businessVO.ts";
 
 const businesses = ref<BusinessVO[]>([])
 const loading = ref(true)
@@ -47,7 +39,7 @@ const fetchBusinessList = async () => {
 }
 
 const navigateToBusinessInfo = (businessId: number) => {
-  router.push({ name: 'BusinessInfo', params: { businessId } })
+  router.push({ name: 'businessInfo', query: { businessId: businessId } })
 }
 
 onMounted(() => {
