@@ -8,6 +8,8 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     Banner: typeof import('./src/components/Home/Banner.vue')['default']
+    BusinessInfoHeader: typeof import('./src/components/BusinessInfo/BusinessInfoHeader.vue')['default']
+    BusinessInformation: typeof import('./src/components/BusinessInfo/BusinessInformation.vue')['default']
     BusinessListHeader: typeof import('./src/components/BusinessList/BusinessListHeader.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElCheckbox: typeof import('element-plus/es')['ElCheckbox']

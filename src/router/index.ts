@@ -9,6 +9,7 @@ const router = createRouter({
     {name: 'reset', path: '/reset', component: () => import('@/views/ResetPage.vue')},
     {name: 'home', path: '/home', component: () => import('@/views/HomePage.vue')},
     {name: 'businessList', path: '/businessList', component: () => import('@/views/BusinessListPage.vue')},
+    {name: 'businessInfo', path: '/businessInfo', component: () => import('@/views/BusinessInfoPage.vue')},
   ],
 })
 
