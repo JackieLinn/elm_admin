@@ -5,7 +5,7 @@ import { useRoute, useRouter } from 'vue-router'
 const route = useRoute()
 const router = useRouter()
 
-const showNavRoutes = ['home', 'businessList']
+const showNavRoutes = ['home', 'businessList', 'mine']
 
 const showNav = computed(() => {
   return showNavRoutes.includes(route.name as string)
@@ -35,7 +35,7 @@ const navigateTo = (path: string) => {
       <i-material-symbols-text-snippet-outline-sharp class="text-[#888] text-[6vw] ml-[0.5vw]"/>
       <span class="text-[#888] text-[4vw] font-medium">订单</span>
     </div>
-    <div class="text-center">
+    <div class="text-center" @click="navigateTo('/mine')">
       <i-ic-round-person class="text-[#888] text-[6vw] ml-[0.5vw]"/>
       <span class="text-[#888] text-[4vw] font-medium">我的</span>
     </div>

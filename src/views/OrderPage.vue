@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import OrderHeader from "@/components/Order/OrderHeader.vue";
+import OrderHeader from "@/components/order/OrderHeader.vue";
 </script>
 
 <template>

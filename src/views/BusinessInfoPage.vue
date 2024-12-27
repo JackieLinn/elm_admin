@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import BusinessInfoHeader from "@/components/BusinessInfo/BusinessInfoHeader.vue";
+import BusinessInfoHeader from "@/components/businessInfo/BusinessInfoHeader.vue";
 import {useRoute, useRouter } from "vue-router";
 import axios from 'axios'
 import type {BusinessVO} from "@/type/businessVO.ts";
-import Cart from "@/components/BusinessInfo/Cart.vue";
-import FoodList from "@/components/BusinessInfo/FoodList.vue";
+import Cart from "@/components/businessInfo/Cart.vue";
+import FoodList from "@/components/businessInfo/FoodList.vue";
 
 const route = useRoute()
 const router = useRouter()

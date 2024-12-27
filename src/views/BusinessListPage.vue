@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import BusinessListHeader from "@/components/BusinessList/BusinessListHeader.vue";
+import BusinessListHeader from "@/components/businessList/BusinessListHeader.vue";
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios'
