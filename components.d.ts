@@ -37,6 +37,7 @@ declare module 'vue' {
     IIcRoundPerson: typeof import('~icons/ic/round-person')['default']
     IMaterialSymbolsAddCircleRounded: typeof import('~icons/material-symbols/add-circle-rounded')['default']
     IMaterialSymbolsChevronLeft: typeof import('~icons/material-symbols/chevron-left')['default']
+    IMaterialSymbolsDoNotDisturbOn: typeof import('~icons/material-symbols/do-not-disturb-on')['default']
     IMaterialSymbolsFilterAltOffOutlineRounded: typeof import('~icons/material-symbols/filter-alt-off-outline-rounded')['default']
     IMaterialSymbolsHouse: typeof import('~icons/material-symbols/house')['default']
     IMaterialSymbolsHouseRounded: typeof import('~icons/material-symbols/house-rounded')['default']

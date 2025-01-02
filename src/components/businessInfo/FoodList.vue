@@ -64,6 +64,89 @@ const mergeFoodAndCart = () => {
   });
 };
 
+// 更新购物车数量
+const updateCartQuantity = async (foodId: number, currentQuantity: number) => {
+  const newQuantity = currentQuantity + 1;
+  try {
+    const token = JSON.parse(sessionStorage.getItem('access_token')).token;
+    const id = JSON.parse(sessionStorage.getItem('access_token')).id;
+    if (currentQuantity === 0) {
+      const response = await axios.post('/api/cart/save-cart', {
+        userId: id,
+        businessId: props.businessId,
+        foodId: foodId
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      console.log('添加至购物车:', response.data);
+    } else {
+      const response = await axios.post('/api/cart/update-cart', {
+        userId: id,
+        businessId: props.businessId,
+        foodId: foodId,
+        quantity: newQuantity
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      console.log('更新购物车:', response.data);
+    }
+    const food = foodList.value.find(item => item.foodId === foodId);
+    if (food) {
+      food.quantity = newQuantity;
+    }
+  } catch (err) {
+    console.error('操作失败:', err);
+    error.value = '操作失败，请稍后重试。';
+  }
+};
+
+// 移除购物车中的食物
+const removeCartItem = async (foodId: number, currentQuantity: number) => {
+  if (currentQuantity > 0) {
+    const newQuantity = currentQuantity - 1;
+    try {
+      const token = JSON.parse(sessionStorage.getItem('access_token')).token;
+      const id = JSON.parse(sessionStorage.getItem('access_token')).id;
+      if (newQuantity > 0) {
+        const response = await axios.post('/api/cart/update-cart', {
+          userId: id,
+          businessId: props.businessId,
+          foodId: foodId,
+          quantity: newQuantity
+        }, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        console.log('更新购物车:', response.data);
+      } else {
+        const response = await axios.post('/api/cart/remove-cart', {
+          userId: id,
+          businessId: props.businessId,
+          foodId: foodId
+        }, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        console.log('从购物车移除:', response.data);
+      }
+      // 更新本地 UI 中的数量
+      const food = foodList.value.find(item => item.foodId === foodId);
+      if (food) {
+        food.quantity = newQuantity;
+      }
+    } catch (err) {
+      console.error('操作失败:', err);
+      error.value = '操作失败，请稍后重试。';
+    }
+  }
+};
+
 onMounted(() => {
   if (props.businessId) {
     fetchFoodList();
@@ -107,9 +190,15 @@ watch(() => props.businessId, (newId) => {
           </div>
           <!-- 右侧操作 -->
           <div class="w-[16vw] flex justify-between items-center mr-[1vw]">
-            <i-material-symbols-add-circle-rounded class="text-[5.5vw] text-gray-500 cursor-pointer"/>
+            <i-material-symbols-add-circle-rounded
+                class="text-[5.5vw] text-blue-500 cursor-pointer"
+                @click="updateCartQuantity(food.foodId, food.quantity)"
+            />
             <p class="text-[3.6vw] text-gray-800 mx-[1vw]">{{ food.quantity }}</p>
-            <i-material-symbols-add-circle-rounded class="text-[5.5vw] text-blue-500 cursor-pointer"/>
+            <i-material-symbols-do-not-disturb-on
+                class="text-[5.5vw] text-gray-500 cursor-pointer"
+                @click="removeCartItem(food.foodId, food.quantity)"
+            />
           </div>
         </div>
       </div>
