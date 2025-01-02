@@ -1,8 +1,11 @@
 <script setup lang="ts">
+import { useCartStore } from '@/stores/cartStore';
 import router from "@/router/index.ts";
 
-const cartQuantity = 3;
-const cartAmount = 12.88;
+const cartStore = useCartStore();
+
+const cartQuantity = computed(() => cartStore.totalQuantity);
+const cartAmount = computed(() => cartStore.totalPrice);
 const deliveryFee = 3;
 </script>
 

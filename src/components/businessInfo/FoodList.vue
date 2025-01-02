@@ -3,6 +3,9 @@ import { ref, onMounted, watch } from 'vue';
 import axios from 'axios';
 import type { FoodVO } from '@/type/foodVO.ts';
 import type {CartVO} from "@/type/cartVO.ts";
+import { useCartStore } from '@/stores/cartStore';
+
+const cartStore = useCartStore();
 
 const props = defineProps<{
   businessId: number;
@@ -48,6 +51,7 @@ const fetchCartList = async () => {
       }
     });
     cartList.value = response.data;
+    cartStore.cartList = response.data;
     mergeFoodAndCart(); // 合并食物信息和购物车数据
   } catch (err) {
     console.error('获取购物车失败:', err);
@@ -59,19 +63,31 @@ const fetchCartList = async () => {
 const mergeFoodAndCart = () => {
   foodList.value = foodList.value.map(food => {
     const cartItem = cartList.value.find(cart => cart.foodId === food.foodId);
-    food.quantity = cartItem ? cartItem.quantity : 0; // 默认数量为0
+    if (cartItem) {
+      cartItem.foodPrice = food.foodPrice || 0;
+      food.quantity = cartItem.quantity;
+    } else {
+      food.quantity = 0;
+    }
     return food;
   });
 };
 
 // 更新购物车数量
-const updateCartQuantity = async (foodId: number, currentQuantity: number) => {
+const updateCartQuantity = async (foodId: number, currentQuantity: number, foodPrice: number) => {
   const newQuantity = currentQuantity + 1;
+  const food = foodList.value.find(item => item.foodId === foodId);
+  if (food) {
+    food.quantity = newQuantity;
+  }
+
+  cartStore.updateCart(foodId, newQuantity, foodPrice);
+
   try {
     const token = JSON.parse(sessionStorage.getItem('access_token')).token;
     const id = JSON.parse(sessionStorage.getItem('access_token')).id;
     if (currentQuantity === 0) {
-      const response = await axios.post('/api/cart/save-cart', {
+      await axios.post('/api/cart/save-cart', {
         userId: id,
         businessId: props.businessId,
         foodId: foodId
@@ -80,9 +96,8 @@ const updateCartQuantity = async (foodId: number, currentQuantity: number) => {
           Authorization: `Bearer ${token}`
         }
       });
-      console.log('添加至购物车:', response.data);
     } else {
-      const response = await axios.post('/api/cart/update-cart', {
+      await axios.post('/api/cart/update-cart', {
         userId: id,
         businessId: props.businessId,
         foodId: foodId,
@@ -92,27 +107,33 @@ const updateCartQuantity = async (foodId: number, currentQuantity: number) => {
           Authorization: `Bearer ${token}`
         }
       });
-      console.log('更新购物车:', response.data);
-    }
-    const food = foodList.value.find(item => item.foodId === foodId);
-    if (food) {
-      food.quantity = newQuantity;
     }
   } catch (err) {
-    console.error('操作失败:', err);
+    console.error('更新购物车失败:', err);
     error.value = '操作失败，请稍后重试。';
   }
 };
 
 // 移除购物车中的食物
-const removeCartItem = async (foodId: number, currentQuantity: number) => {
+const removeCartItem = async (foodId: number, currentQuantity: number, foodPrice: number) => {
   if (currentQuantity > 0) {
     const newQuantity = currentQuantity - 1;
+    const food = foodList.value.find(item => item.foodId === foodId);
+    if (food) {
+      food.quantity = newQuantity;
+    }
+
+    if (newQuantity > 0) {
+      cartStore.updateCart(foodId, newQuantity, foodPrice);
+    } else {
+      cartStore.removeCart(foodId);
+    }
+
     try {
       const token = JSON.parse(sessionStorage.getItem('access_token')).token;
       const id = JSON.parse(sessionStorage.getItem('access_token')).id;
       if (newQuantity > 0) {
-        const response = await axios.post('/api/cart/update-cart', {
+        await axios.post('/api/cart/update-cart', {
           userId: id,
           businessId: props.businessId,
           foodId: foodId,
@@ -122,9 +143,8 @@ const removeCartItem = async (foodId: number, currentQuantity: number) => {
             Authorization: `Bearer ${token}`
           }
         });
-        console.log('更新购物车:', response.data);
       } else {
-        const response = await axios.post('/api/cart/remove-cart', {
+        await axios.post('/api/cart/remove-cart', {
           userId: id,
           businessId: props.businessId,
           foodId: foodId
@@ -133,15 +153,9 @@ const removeCartItem = async (foodId: number, currentQuantity: number) => {
             Authorization: `Bearer ${token}`
           }
         });
-        console.log('从购物车移除:', response.data);
-      }
-      // 更新本地 UI 中的数量
-      const food = foodList.value.find(item => item.foodId === foodId);
-      if (food) {
-        food.quantity = newQuantity;
       }
     } catch (err) {
-      console.error('操作失败:', err);
+      console.error('更新购物车失败:', err);
       error.value = '操作失败，请稍后重试。';
     }
   }
@@ -192,12 +206,12 @@ watch(() => props.businessId, (newId) => {
           <div class="w-[16vw] flex justify-between items-center mr-[1vw]">
             <i-material-symbols-add-circle-rounded
                 class="text-[5.5vw] text-blue-500 cursor-pointer"
-                @click="updateCartQuantity(food.foodId, food.quantity)"
+                @click="updateCartQuantity(food.foodId, food.quantity, food.foodPrice)"
             />
             <p class="text-[3.6vw] text-gray-800 mx-[1vw]">{{ food.quantity }}</p>
             <i-material-symbols-do-not-disturb-on
                 class="text-[5.5vw] text-gray-500 cursor-pointer"
-                @click="removeCartItem(food.foodId, food.quantity)"
+                @click="removeCartItem(food.foodId, food.quantity, food.foodPrice)"
             />
           </div>
         </div>
