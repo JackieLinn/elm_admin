@@ -1,12 +1,37 @@
 <script setup lang="ts">
 import { useCartStore } from '@/stores/cartStore';
 import router from "@/router/index.ts";
+import axios from 'axios';
 
 const cartStore = useCartStore();
 
+const props = defineProps<{
+  businessId: number;
+}>();
+
 const cartQuantity = computed(() => cartStore.totalQuantity);
 const cartAmount = computed(() => cartStore.totalPrice);
-const deliveryFee = 3;
+const deliveryFee = ref<number>(0);
+
+const fetchDeliveryFee = async () => {
+  try {
+    const token = JSON.parse(sessionStorage.getItem('access_token')).token;
+    const response = await axios.get(`/api/business/get-delivery-price`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+      params: { businessId: props.businessId }
+    });
+    deliveryFee.value = response.data;
+  } catch (error) {
+    console.error('获取配送费失败:', error);
+    deliveryFee.value = 0;
+  }
+};
+
+onMounted(() => {
+  fetchDeliveryFee();
+});
 </script>
 
 <template>

@@ -68,7 +68,7 @@ onMounted(() => {
       <FoodList :businessId="businessId" />
     </div>
     <div class="w-full h-[14vw]">
-      <Cart />
+      <Cart :businessId="businessId" />
     </div>
   </div>
 </template>
