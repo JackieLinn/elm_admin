@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useCartStore } from '@/stores/cartStore';
+import {useCartStore} from '@/stores/cartStore';
 import router from "@/router/index.ts";
 import axios from 'axios';
 
@@ -20,7 +20,7 @@ const fetchDeliveryFee = async () => {
       headers: {
         Authorization: `Bearer ${token}`
       },
-      params: { businessId: props.businessId }
+      params: {businessId: props.businessId}
     });
     deliveryFee.value = response.data;
   } catch (error) {
@@ -28,6 +28,10 @@ const fetchDeliveryFee = async () => {
     deliveryFee.value = 0;
   }
 };
+
+const NavigateToOrderPage = () => {
+  router.push('/order');
+}
 
 onMounted(() => {
   fetchDeliveryFee();
@@ -37,9 +41,11 @@ onMounted(() => {
 <template>
   <div class="w-full h-[14vw] fixed bottom-0 left-0 flex">
     <div class="w-[66%] bg-[#505051] flex">
-      <div class="w-[16vw] h-[16vw] border-[1.6vw] border-[#444] rounded-full bg-[#3190E8] flex justify-center items-center -mt-[4vw] ml-[3vw] relative">
+      <div
+          class="w-[16vw] h-[16vw] border-[1.6vw] border-[#444] rounded-full bg-[#3190E8] flex justify-center items-center -mt-[4vw] ml-[3vw] relative">
         <i-material-symbols-shopping-cart class="text-[7vw] text-white"/>
-        <div class="absolute top-[-1.5vw] right-[-1.5vw] w-[5vw] h-[5vw] rounded-full bg-red-500 text-white text-[3.6vw] flex justify-center items-center">
+        <div
+            class="absolute top-[-1.5vw] right-[-1.5vw] w-[5vw] h-[5vw] rounded-full bg-red-500 text-white text-[3.6vw] flex justify-center items-center">
           {{ cartQuantity }}
         </div>
       </div>
@@ -49,8 +55,8 @@ onMounted(() => {
       </div>
     </div>
     <div class="w-[34%]">
-      <div @click="router.push('/order')"
-          class="w-full h-full bg-[#38CA73] text-white text-[4.5vw] font-bold flex justify-center items-center cursor-pointer">
+      <div @click="NavigateToOrderPage"
+           class="w-full h-full bg-[#38CA73] text-white text-[4.5vw] font-bold flex justify-center items-center cursor-pointer">
         去结算
       </div>
     </div>
