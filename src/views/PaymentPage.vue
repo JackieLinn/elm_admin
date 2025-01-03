@@ -2,13 +2,14 @@
 import {onMounted, ref} from 'vue';
 import {useRoute, useRouter } from "vue-router";
 import PaymentHead from "@/components/payment/PaymentHead.vue";
+import type {OrdersBusinessVO} from "@/type/ordersBusinessVO.ts";
+import type {OrdersFoodVO} from "@/type/ordersFoodVO.ts";
+import axios from "axios";
 
 const route = useRoute()
 const router = useRouter()
 
 const orderId = ref<number>(Number(route.query.orderId));
-console.log(orderId.value)
-console.log(typeof orderId.value)
 
 const selectedPayment = ref<'ALiPay' | 'WeChatPay' | null>('ALiPay');
 
@@ -20,7 +21,38 @@ const togglePayment = (payment: 'ALiPay' | 'WeChatPay') => {
   }
 };
 
+const businessInfo = ref<OrdersBusinessVO | null>({});
+const foodInfo = ref<OrdersFoodVO[]>([]);
+
+const fetchOrderData = async () => {
+  try {
+    const token = JSON.parse(sessionStorage.getItem('access_token')).token;
+    // 获取商家信息
+    const businessResponse = await axios.get('/api/orders/get-business-info', {
+      params: {
+        orderId: orderId.value
+      }, headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    businessInfo.value = businessResponse.data;
+
+    // 获取食物信息
+    const foodResponse = await axios.get('/api/orders/get-food-info', {
+      params: {
+        orderId: orderId.value
+      }, headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    foodInfo.value = foodResponse.data;
+  } catch (error) {
+    console.log('获取订单数据失败:', error);
+  }
+}
+
 onMounted(() => {
+  fetchOrderData();
 });
 </script>
 
@@ -33,23 +65,20 @@ onMounted(() => {
 
   <div class="flex justify-between items-center p-[4vw] text-[#666] text-[4.5vw]">
     <span class="flex">
-      万家饺子（软件园E18店）
+      {{ businessInfo.businessName }}
       <i-octicon-triangle-down-24 class="ml-[-2vw] mt-[0.5vw] align-[center]"/>
     </span>
-    <span class="text-[orangered]">¥ 49</span>
+    <span class="text-[orangered]">¥ {{ businessInfo.totalPrice }}</span>
   </div>
   <div class="w-full">
-    <div class="flex justify-between items-center px-[4vw] py-[1vw]">
-      <span class="text-[3.5vw] text-[#666]">纯肉鲜肉（水饺） x 2</span>
-      <span class="text-[3.5vw] text-[#666]">&#165;15</span>
+    <div v-for="(food, index) in foodInfo" :key="index" class="flex justify-between items-center px-[4vw] py-[1vw]">
+      <span class="text-[3.5vw] text-[#666]">{{ food.foodName }} x {{ food.quantity }}</span>
+      <span class="text-[3.5vw] text-[#666]">¥ {{ food.foodPrice * food.quantity }}</span>
     </div>
-    <div class="flex justify-between items-center px-[4vw] py-[1vw]">
-      <span class="text-[3.5vw] text-[#666]">玉米鲜肉（水饺） x 1</span>
-      <span class="text-[3.5vw] text-[#666]">&#165;16</span>
-    </div>
+    <!-- 配送费 -->
     <div class="flex justify-between items-center px-[4vw] py-[1vw]">
       <span class="text-[3.5vw] text-[#666]">配送费</span>
-      <span class="text-[3.5vw] text-[#666]">&#165;3</span>
+      <span class="text-[3.5vw] text-[#666]">¥ {{ businessInfo.deliveryPrice }}</span>
     </div>
   </div>
 
