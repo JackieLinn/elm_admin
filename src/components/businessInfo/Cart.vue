@@ -49,7 +49,7 @@ const NavigateToOrderPage = async () => {
       }
     });
     const orderId = response.data;
-    await router.push({name: 'order', query: {orderId}});
+    await router.push({ name: 'order', query: {orderId: orderId}});
   } catch (error) {
     console.error('创建订单失败:', error);
   }
