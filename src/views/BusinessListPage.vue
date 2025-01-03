@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import BusinessListHeader from "@/components/businessList/BusinessListHeader.vue";
-import { ref, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import {ref, onMounted} from 'vue'
+import {useRoute, useRouter} from 'vue-router'
 import axios from 'axios'
 import type {BusinessVO} from "@/type/businessVO.ts";
 
@@ -10,6 +10,9 @@ const loading = ref(true)
 const error = ref('')
 const router = useRouter()
 const route = useRoute()
+
+// 存储每个商家的购物车数量
+const businessCartQuantity = ref<Map<number, number>>(new Map());
 
 // 获取 orderTypeId 参数
 const orderTypeId = ref<number>(Number(route.query.orderTypeId))
@@ -38,12 +41,38 @@ const fetchBusinessList = async () => {
   }
 }
 
+const fetchCartQuantities = async () => {
+  try {
+    const userId = JSON.parse(sessionStorage.getItem('access_token')).id;
+    const token = JSON.parse(sessionStorage.getItem('access_token')).token;
+    const response = await axios.get('/api/cart/get-cart-quantity', {
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+      params: {
+        userId
+      }
+    });
+    response.data.forEach((item: { businessId: number; quantity: number }) => {
+      businessCartQuantity.value.set(item.businessId, item.quantity);
+    });
+  } catch (err) {
+    console.error('获取购物车数量失败:', err);
+  }
+};
+
+// 获取某个商家的购物车数量，如果没有则返回 0
+const getCartQuantityForBusiness = (businessId: number) => {
+  return businessCartQuantity.value.get(businessId) || 0;
+};
+
 const navigateToBusinessInfo = (businessId: number) => {
-  router.push({ name: 'businessInfo', query: { businessId: businessId } })
+  router.push({name: 'businessInfo', query: {businessId: businessId}})
 }
 
 onMounted(() => {
   fetchBusinessList()
+  fetchCartQuantities()
 })
 </script>
 
@@ -52,7 +81,7 @@ onMounted(() => {
 
   <div class="w-full mt-[12vw] mb-[14vw]">
     <!-- 头部组件 -->
-    <BusinessListHeader />
+    <BusinessListHeader/>
 
     <div v-if="loading" class="text-center text-lg mt-4">加载中...</div>
     <div v-else-if="error" class="text-center text-red-500 mt-4">{{ error }}</div>
@@ -70,8 +99,9 @@ onMounted(() => {
               :alt="business.businessName"
               class="w-[20vw] h-[20vw] object-cover"
           />
-          <div class="absolute -right-[1.5vw] -top-[1.5vw] w-[5vw] h-[5vw] bg-red-500 text-white text-[3.6vw] rounded-full flex justify-center items-center">
-            3
+          <div v-if="getCartQuantityForBusiness(business.businessId) > 0"
+               class="absolute -right-[1.5vw] -top-[1.5vw] w-[5vw] h-[5vw] bg-red-500 text-white text-[3.6vw] rounded-full flex justify-center items-center">
+            {{ getCartQuantityForBusiness(business.businessId) }}
           </div>
         </div>
         <!-- 商家信息 -->
