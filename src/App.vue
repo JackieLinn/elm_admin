@@ -5,7 +5,7 @@ import { useRoute, useRouter } from 'vue-router'
 const route = useRoute()
 const router = useRouter()
 
-const showNavRoutes = ['home', 'businessList', 'mine']
+const showNavRoutes = ['home', 'businessList', 'mine', 'payment']
 
 const showNav = computed(() => {
   return showNavRoutes.includes(route.name as string)

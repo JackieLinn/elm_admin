@@ -74,7 +74,8 @@ onMounted(() => {
     <div class="w-[66%] bg-[#505051] text-white text-[4.5vw] font-bold flex justify-center items-center">
       &#165; {{ businessInfo.totalPrice }}
     </div>
-    <div class="w-[34%] bg-[#38CA73] text-white text-[4.5vw] font-bold flex justify-center items-center cursor-pointer">
+    <div @click="router.push('/payment')"
+        class="w-[34%] bg-[#38CA73] text-white text-[4.5vw] font-bold flex justify-center items-center cursor-pointer">
       去支付
     </div>
   </div>

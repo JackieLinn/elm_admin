@@ -12,6 +12,7 @@ const router = createRouter({
     {name: 'businessInfo', path: '/businessInfo', component: () => import('@/views/BusinessInfoPage.vue')},
     {name: 'order', path: '/order', component: () => import('@/views/OrderPage.vue')},
     {name: 'mine', path: '/mine', component: () => import('@/views/MinePage.vue')},
+    {name: 'payment', path: '/payment', component: () => import('@/views/PaymentPage.vue')},
   ],
 })
 
