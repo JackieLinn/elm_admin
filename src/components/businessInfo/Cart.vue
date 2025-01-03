@@ -29,8 +29,30 @@ const fetchDeliveryFee = async () => {
   }
 };
 
-const NavigateToOrderPage = () => {
-  router.push('/order');
+const buttonClass = computed(() => {
+  return cartQuantity.value > 0
+      ? 'bg-[#38CA73] cursor-pointer'
+      : 'bg-[#D3D3D3] cursor-not-allowed';
+});
+
+const NavigateToOrderPage = async () => {
+  try {
+    const token = JSON.parse(sessionStorage.getItem('access_token')).token;
+    const id = JSON.parse(sessionStorage.getItem('access_token')).id;
+    const response = await axios.post('/api/orders/create-orders', {
+      userId: id,
+      businessId: props.businessId,
+      totalPrice: cartAmount.value + deliveryFee.value,
+    }, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    });
+    const orderId = response.data;
+    await router.push({name: 'order', query: {orderId}});
+  } catch (error) {
+    console.error('创建订单失败:', error);
+  }
 }
 
 onMounted(() => {
@@ -56,7 +78,8 @@ onMounted(() => {
     </div>
     <div class="w-[34%]">
       <div @click="NavigateToOrderPage"
-           class="w-full h-full bg-[#38CA73] text-white text-[4.5vw] font-bold flex justify-center items-center cursor-pointer">
+           :class="buttonClass"
+           class="w-full h-full text-white text-[4.5vw] font-bold flex justify-center items-center cursor-pointer">
         去结算
       </div>
     </div>
