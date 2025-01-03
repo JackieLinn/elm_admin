@@ -42,6 +42,10 @@ const fetchOrderData = async () => {
   }
 };
 
+const NavigateToPayment = () => {
+  router.push({ name: 'payment', query: { orderId: orderId.value }});
+};
+
 onMounted(() => {
   fetchOrderData();
 });
@@ -74,7 +78,7 @@ onMounted(() => {
     <div class="w-[66%] bg-[#505051] text-white text-[4.5vw] font-bold flex justify-center items-center">
       &#165; {{ businessInfo.totalPrice }}
     </div>
-    <div @click="router.push('/payment')"
+    <div @click="NavigateToPayment"
         class="w-[34%] bg-[#38CA73] text-white text-[4.5vw] font-bold flex justify-center items-center cursor-pointer">
       去支付
     </div>

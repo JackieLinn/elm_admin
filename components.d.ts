@@ -36,6 +36,7 @@ declare module 'vue' {
     IIcOutlineLocationOn: typeof import('~icons/ic/outline-location-on')['default']
     IIcRoundPerson: typeof import('~icons/ic/round-person')['default']
     IMaterialSymbolsAddCircleRounded: typeof import('~icons/material-symbols/add-circle-rounded')['default']
+    IMaterialSymbolsCheckCircle: typeof import('~icons/material-symbols/check-circle')['default']
     IMaterialSymbolsChevronLeft: typeof import('~icons/material-symbols/chevron-left')['default']
     IMaterialSymbolsChevronRight: typeof import('~icons/material-symbols/chevron-right')['default']
     IMaterialSymbolsDoNotDisturbOn: typeof import('~icons/material-symbols/do-not-disturb-on')['default']
