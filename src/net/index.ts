@@ -86,7 +86,7 @@ function login(username, password, remember, success, failure = defaultFailure) 
         'Content-Type': 'application/x-www-form-urlencoded'
     }, (data) => {
         storeAccessToken(remember, data.token, data.expire, data.username, data.id)
-        ElMessage.success(`登录成功，欢迎 ${data.username} 来到我们的系统`)
+        ElMessage.success(`欢迎 ${data.username} ~`)
         success(data)
     }, failure)
 }
@@ -94,7 +94,7 @@ function login(username, password, remember, success, failure = defaultFailure) 
 function logout(success, failure = defaultFailure) {
     get('/auth/logout', () => {
         deleteAccessToken()
-        ElMessage.success('退出登录成功，欢迎您再次使用')
+        ElMessage.success('欢迎您再次使用')
         success()
     }, failure)
 }
