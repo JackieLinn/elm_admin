@@ -48,6 +48,7 @@ declare module 'vue' {
     IMaterialSymbolsStar: typeof import('~icons/material-symbols/star')['default']
     IMaterialSymbolsTextSnippetOutlineSharp: typeof import('~icons/material-symbols/text-snippet-outline-sharp')['default']
     IOcticonTriangleDown24: typeof import('~icons/octicon/triangle-down24')['default']
+    IOcticonTriangleUp24: typeof import('~icons/octicon/triangle-up24')['default']
     IPhMagnifyingGlassBold: typeof import('~icons/ph/magnifying-glass-bold')['default']
     ITdesignCompass: typeof import('~icons/tdesign/compass')['default']
     MineHeader: typeof import('./src/components/mine/MineHeader.vue')['default']
