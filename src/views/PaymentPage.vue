@@ -5,6 +5,7 @@ import PaymentHead from "@/components/payment/PaymentHead.vue";
 import type {OrdersBusinessVO} from "@/type/ordersBusinessVO.ts";
 import type {OrdersFoodVO} from "@/type/ordersFoodVO.ts";
 import axios from "axios";
+import {ElMessage} from "element-plus";
 
 const route = useRoute()
 const router = useRouter()
@@ -48,6 +49,30 @@ const fetchOrderData = async () => {
     foodInfo.value = foodResponse.data;
   } catch (error) {
     console.log('获取订单数据失败:', error);
+  }
+}
+
+const payment = async () => {
+  try {
+    const token = JSON.parse(sessionStorage.getItem('access_token')).token;
+    const id = JSON.parse(sessionStorage.getItem('access_token')).id;
+    const response = await axios.post('/api/orders/payment', {
+      userId: id,
+      orderId: orderId.value
+    }, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    });
+    const isPay = response.data
+    if (isPay) {
+      ElMessage.success("支付成功！")
+      await router.push('/home')
+    } else {
+      ElMessage.error("出现异常！")
+    }
+  } catch (error) {
+    console.error('支付失败:', error);
   }
 }
 
@@ -107,7 +132,7 @@ onMounted(() => {
     </div>
 
     <div class="w-full px-[4vw] pb-[14vw] pt-[3vw] flex justify-center items-center">
-      <el-button type="success" class="w-[95vw]">
+      <el-button @click="payment" type="success" class="w-[95vw]">
         确认支付
       </el-button>
     </div>
