@@ -10,6 +10,17 @@ import type {OrdersBusinessVO} from "@/type/ordersBusinessVO.ts";
 const route = useRoute()
 const router = useRouter()
 
+const id = JSON.parse(sessionStorage.getItem('access_token')).id;
+console.log(id)
+console.log(typeof id)
+
+const selectedDaId = ref<number | null>(null);
+function handleDaIdChange(daId: number | null) {
+  selectedDaId.value = daId;
+  console.log(selectedDaId.value)
+  console.log(typeof selectedDaId.value)
+}
+
 const orderId = ref<number>(Number(route.query.orderId))
 
 const businessInfo = ref<OrdersBusinessVO | null>({});
@@ -53,7 +64,7 @@ onMounted(() => {
 
 <template>
   <OrderHeader/>
-  <OrderAddress/>
+  <OrderAddress :userId="id" @update-daId="handleDaIdChange" />
 
   <h3 class="m-0 box-border p-[3vw] text-[5vw] text-[#666] border-b border-[#DDD] font-bold">
     {{ businessInfo.businessName }}
