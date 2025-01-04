@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import {onMounted, ref} from 'vue';
-import {useRoute, useRouter } from "vue-router";
+import { onMounted, ref } from 'vue';
+import { useRoute, useRouter } from "vue-router";
 import PaymentHead from "@/components/payment/PaymentHead.vue";
-import type {OrdersBusinessVO} from "@/type/ordersBusinessVO.ts";
-import type {OrdersFoodVO} from "@/type/ordersFoodVO.ts";
+import type { OrdersBusinessVO } from "@/type/ordersBusinessVO.ts";
+import type { OrdersFoodVO } from "@/type/ordersFoodVO.ts";
 import axios from "axios";
-import {ElMessage} from "element-plus";
+import { ElMessage } from "element-plus";
 
-const route = useRoute()
-const router = useRouter()
+const route = useRoute();
+const router = useRouter();
 
 const orderId = ref<number>(Number(route.query.orderId));
 
@@ -29,12 +29,19 @@ const foodInfo = ref<OrdersFoodVO[]>([]);
 
 const fetchOrderData = async () => {
   try {
-    const token = JSON.parse(sessionStorage.getItem('access_token')).token;
+    const tokenData = sessionStorage.getItem('access_token');
+    if (!tokenData) {
+      console.error('没有找到访问令牌');
+      return;
+    }
+    const { token, id } = JSON.parse(tokenData);
+
     // 获取商家信息
     const businessResponse = await axios.get('/api/orders/get-business-info', {
       params: {
         orderId: orderId.value
-      }, headers: {
+      },
+      headers: {
         Authorization: `Bearer ${token}`
       }
     });
@@ -44,7 +51,8 @@ const fetchOrderData = async () => {
     const foodResponse = await axios.get('/api/orders/get-food-info', {
       params: {
         orderId: orderId.value
-      }, headers: {
+      },
+      headers: {
         Authorization: `Bearer ${token}`
       }
     });
@@ -56,8 +64,13 @@ const fetchOrderData = async () => {
 
 const payment = async () => {
   try {
-    const token = JSON.parse(sessionStorage.getItem('access_token')).token;
-    const id = JSON.parse(sessionStorage.getItem('access_token')).id;
+    const tokenData = sessionStorage.getItem('access_token');
+    if (!tokenData) {
+      ElMessage.error("未找到访问令牌！");
+      return;
+    }
+    const { token, id } = JSON.parse(tokenData);
+
     const response = await axios.post('/api/orders/payment', {
       userId: id,
       orderId: orderId.value
@@ -66,15 +79,16 @@ const payment = async () => {
         Authorization: `Bearer ${token}`,
       }
     });
-    const isPay = response.data
+    const isPay = response.data;
     if (isPay) {
-      ElMessage.success("支付成功！")
-      await router.push('/home')
+      ElMessage.success("支付成功！");
+      await router.push('/home');
     } else {
-      ElMessage.error("出现异常！")
+      ElMessage.error("出现异常！");
     }
   } catch (error) {
     console.error('支付失败:', error);
+    ElMessage.error("支付失败，请稍后重试！");
   }
 }
 
@@ -94,8 +108,14 @@ onMounted(() => {
     <span class="flex">
       {{ businessInfo.businessName }}
       <i-octicon-triangle-down-24
+          v-if="!isFoodListVisible"
           @click="isFoodListVisible = !isFoodListVisible"
-          class="ml-[-2vw] mt-[0.5vw] align-[center] cursor-pointer"
+          class="ml-[1vw] mt-[0.5vw] align-center cursor-pointer"
+      />
+      <i-octicon-triangle-up-24
+          v-else
+          @click="isFoodListVisible = !isFoodListVisible"
+          class="ml-[1vw] mt-[0.5vw] align-center cursor-pointer"
       />
     </span>
     <span class="text-[orangered]">¥ {{ businessInfo.totalPrice }}</span>
@@ -118,7 +138,7 @@ onMounted(() => {
           class="flex justify-between items-center px-[4vw] py-[4vw] pb-[1vw]"
           @click="togglePayment('ALiPay')"
       >
-        <img src="/img/alipay.png" alt="" class="w-[33vw] h-[8.6vw]" />
+        <img src="/img/alipay.png" alt="支付宝" class="w-[33vw] h-[8.6vw]" />
         <i-material-symbols-check-circle
             class="text-[5vw]"
             :class="{'text-[#38CA73]': selectedPayment === 'ALiPay', 'text-[#ccc]': selectedPayment !== 'ALiPay'}"
@@ -128,7 +148,7 @@ onMounted(() => {
           class="flex justify-between items-center px-[4vw] py-[4vw] pb-[1vw]"
           @click="togglePayment('WeChatPay')"
       >
-        <img src="/img/wechat.png" alt="" class="w-[33vw] h-[8.6vw]" />
+        <img src="/img/wechat.png" alt="微信支付" class="w-[33vw] h-[8.6vw]" />
         <i-material-symbols-check-circle
             class="text-[5vw]"
             :class="{'text-[#38CA73]': selectedPayment === 'WeChatPay', 'text-[#ccc]': selectedPayment !== 'WeChatPay'}"
