@@ -10,18 +10,28 @@ import type {OrdersBusinessVO} from "@/type/ordersBusinessVO.ts";
 const route = useRoute()
 const router = useRouter()
 
+const orderId = ref<number>(Number(route.query.orderId))
+
 const id = JSON.parse(sessionStorage.getItem('access_token')).id;
-console.log(id)
-console.log(typeof id)
 
 const selectedDaId = ref<number | null>(null);
-function handleDaIdChange(daId: number | null) {
-  selectedDaId.value = daId;
-  console.log(selectedDaId.value)
-  console.log(typeof selectedDaId.value)
-}
 
-const orderId = ref<number>(Number(route.query.orderId))
+const handleDaIdChange = async (daId: number | null) => {
+  selectedDaId.value = daId;
+  try {
+    const token = JSON.parse(sessionStorage.getItem('access_token')).token;
+    await axios.post('/api/orders/update-address', {
+      orderId: orderId.value,
+      daId: selectedDaId.value
+    }, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    })
+  } catch (error) {
+    console.error('更新地址失败:', error);
+  }
+}
 
 const businessInfo = ref<OrdersBusinessVO | null>({});
 const foodInfo = ref<OrdersFoodVO[]>([]);

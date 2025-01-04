@@ -1,44 +1,20 @@
 <script setup lang="ts">
 import { ref, onMounted, defineProps, defineEmits } from 'vue';
 import axios from 'axios';
+import {ElMessage, ElMessageBox} from "element-plus";
+import type {DeliveryAddressVO} from "@/type/deliveryAddressVO.ts";
+import type {DeliveryAddressSaveRO} from "@/type/deliveryAddressSaveRO.ts";
+import type {DeliveryAddressUpdateRO} from "@/type/deliveryAddressUpdateRO.ts";
 
-// 定义 props
 const props = defineProps<{
   userId: number;
 }>();
 
-// 定义 emits
 const emit = defineEmits<{
   (e: 'update-daId', daId: number | null): void;
 }>();
 
 const token = JSON.parse(sessionStorage.getItem('access_token')).token;
-
-// 定义接口
-interface DeliveryAddressVO {
-  daId: number;
-  contactName: string;
-  contactSex: number; // 1: 男, 0: 女
-  contactTel: string;
-  address: string;
-}
-
-interface DeliveryAddressSaveRO {
-  contactName: string;
-  contactSex: number;
-  contactTel: string;
-  address: string;
-  userId: number;
-}
-
-interface DeliveryAddressUpdateRO {
-  daId: number;
-  contactName: string;
-  contactSex: number;
-  contactTel: string;
-  address: string;
-  userId: number;
-}
 
 // 状态变量
 const addresses = ref<DeliveryAddressVO[]>([]);
@@ -48,7 +24,7 @@ const addEditDialogVisible = ref(false);
 const isEditing = ref(false);
 const currentEditAddress = ref<DeliveryAddressVO | null>(null);
 
-// 新增/编辑表单
+// 新增或编辑表单
 const form = ref<{
   daId?: number;
   contactName: string;
@@ -139,7 +115,6 @@ const deleteAddress = async (daId: number) => {
       }
     });
     await fetchAddresses();
-    // 如果删除的是当前选中的地址，重置选中
     if (selectedAddress.value?.daId === daId) {
       if (addresses.value.length > 0) {
         selectedAddress.value = addresses.value[0];
@@ -154,15 +129,14 @@ const deleteAddress = async (daId: number) => {
   }
 };
 
-// 提交新增/编辑表单
+// 提交新增或编辑表单
 const submitForm = async () => {
   if (!form.value.contactName || !form.value.contactTel || !form.value.address) {
-    alert('请填写完整的地址信息');
+    ElMessage.error('请填写完整的地址信息');
     return;
   }
 
   if (isEditing.value && form.value.daId !== undefined) {
-    // 编辑地址
     const updateRO: DeliveryAddressUpdateRO = {
       daId: form.value.daId,
       contactName: form.value.contactName,
@@ -183,7 +157,6 @@ const submitForm = async () => {
       console.error('更新地址失败:', error);
     }
   } else {
-    // 新增地址
     const saveRO: DeliveryAddressSaveRO = {
       contactName: form.value.contactName,
       contactSex: form.value.contactSex,
@@ -212,32 +185,50 @@ const closeAddEditDialog = () => {
 
 // 处理删除操作的确认
 const confirmDelete = (daId: number) => {
-  if (confirm('确定删除该地址吗？')) {
-    deleteAddress(daId);
-  }
+  ElMessageBox.confirm('确定删除该地址吗？', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+  })
+      .then(() => {
+        deleteAddress(daId);
+        ElMessage({
+          type: 'success',
+          message: '地址已删除',
+        });
+      })
+      .catch(() => {
+        ElMessage({
+          type: 'info',
+          message: '已取消删除',
+        });
+      });
 };
 
-// 在组件挂载时获取地址列表
 onMounted(() => {
   fetchAddresses();
 });
 </script>
 
 <template>
-  <div class="w-full mt-[12vw] bg-[#0097FF] p-[2vw] text-white">
+  <div class="w-full mt-[12vw] bg-[#0097FF] p-[3vw] text-white">
     <h5 class="text-[3.5vw] font-light m-0">订单配送至：</h5>
 
     <div
         class="w-full flex justify-between items-center font-bold cursor-pointer user-select-none my-[1vw]"
         @click="openDialog"
     >
-      <span class="w-[90%] text-[5vw]">
-        {{
-          selectedAddress
-              ? `${selectedAddress.contactName}${selectedAddress.contactSex === 1 ? '先生' : '女士'} ${selectedAddress.contactTel} ${selectedAddress.address}`
-              : '暂无信息，请先添加地址'
-        }}
-      </span>
+      <div class="w-[90%] text-[5vw]">
+        <div v-if="selectedAddress">
+          <div class="mb-1">
+            {{ selectedAddress.address }}
+          </div>
+          <div class="text-[4vw] font-normal">
+            {{ selectedAddress.contactName }}{{ selectedAddress.contactSex === 1 ? '先生' : '女士' }} {{ selectedAddress.contactTel }}
+          </div>
+        </div>
+        <span v-else>暂无信息，请先添加地址</span>
+      </div>
       <i-material-symbols-chevron-right class="text-[5vw] font-bold"/>
     </div>
   </div>
@@ -250,38 +241,38 @@ onMounted(() => {
         <div
             v-for="address in addresses"
             :key="address.daId"
-            class="flex justify-between items-center p-2 border-b cursor-pointer hover:bg-gray-100"
+            class="flex justify-between items-center py-2 border-b cursor-pointer hover:bg-gray-100"
             @click="selectAddress(address)"
         >
           <div>
-            <div class="font-bold">
+            <div class="font-bold text-3.5">
               {{ address.contactName }}{{ address.contactSex === 1 ? '先生' : '女士' }} {{ address.contactTel }}
             </div>
-            <div class="text-sm">{{ address.address }}</div>
+            <div class="text-sm text-1 text-gray-600">{{ address.address }}</div>
           </div>
           <div class="flex space-x-2">
-            <button
-                class="text-blue-500 text-sm"
+            <el-button
+                type="warning" size="small"
                 @click.stop="openEditDialog(address)"
             >
               修改
-            </button>
-            <button
-                class="text-red-500 text-sm"
+            </el-button>
+            <el-button
+                type="danger" size="small"
                 @click.stop="confirmDelete(address.daId)"
             >
               删除
-            </button>
+            </el-button>
           </div>
         </div>
       </div>
       <div v-else class="text-center text-gray-500">暂无信息，请先添加地址</div>
-      <button
+      <el-button type="primary"
           class="mt-4 w-full bg-blue-500 text-white py-2 rounded"
           @click="openAddDialog"
       >
         新增地址
-      </button>
+      </el-button>
       <button
           class="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
           @click="closeDialog"
@@ -298,50 +289,75 @@ onMounted(() => {
       <form @submit.prevent="submitForm" class="space-y-4">
         <div>
           <label class="block mb-1">联系人姓名</label>
-          <input
-              type="text"
+          <el-input
               v-model="form.contactName"
-              class="w-full border px-2 py-1 rounded"
+              placeholder="请输入联系人姓名"
+              size="default"
+              class="w-full border rounded"
               required
           />
         </div>
         <div>
           <label class="block mb-1">联系人性别</label>
-          <select v-model.number="form.contactSex" class="w-full border px-2 py-1 rounded" required>
-            <option :value="1">先生</option>
-            <option :value="0">女士</option>
-          </select>
+          <el-select
+              v-model.number="form.contactSex"
+              placeholder="请选择"
+              size="default"
+              class="w-full"
+              popper-style="width: 80px;"
+              required
+          >
+            <el-option label="先生" :value="1" />
+            <el-option label="女士" :value="0" />
+          </el-select>
         </div>
         <div>
-          <label class="block mb-1">联系电话</label>
-          <input
-              type="tel"
+          <label class="mb-1">联系电话</label>
+          <el-input
+              type="number"
               v-model="form.contactTel"
-              class="w-full border px-2 py-1 rounded"
+              placeholder="请输入联系电话"
+              size="default"
+              class="w-full border rounded"
               required
           />
         </div>
         <div>
           <label class="block mb-1">详细地址</label>
-          <textarea
+          <el-input
+              type="textarea"
               v-model="form.address"
-              class="w-full border px-2 py-1 rounded"
+              placeholder="请输入详细地址"
+              size="default"
+              class="w-full border rounded"
               required
-          ></textarea>
+          />
         </div>
         <div class="flex justify-end space-x-2">
-          <button type="button" class="px-4 py-2" @click="closeAddEditDialog">取消</button>
-          <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">
+          <el-button
+              type="info"
+              size="small"
+              class="px-4 py-2"
+              @click="closeAddEditDialog"
+          >
+            取消
+          </el-button>
+          <el-button
+              type="primary"
+              size="small"
+              class="px-4 py-2"
+              native-type="submit"
+          >
             {{ isEditing ? '保存修改' : '新增地址' }}
-          </button>
+          </el-button>
         </div>
       </form>
-      <button
+      <el-button
           class="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
           @click="closeAddEditDialog"
-      >
-        ×
-      </button>
+          type="text"
+          icon="el-icon-close"
+      />
     </div>
   </div>
 </template>
