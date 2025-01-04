@@ -53,6 +53,8 @@ declare module 'vue' {
     MineHeader: typeof import('./src/components/mine/MineHeader.vue')['default']
     OrderAddress: typeof import('./src/components/order/OrderAddress.vue')['default']
     OrderHeader: typeof import('./src/components/order/OrderHeader.vue')['default']
+    OrderList: typeof import('./src/components/orderList.vue')['default']
+    OrderListHeader: typeof import('./src/components/orderList/orderListHeader.vue')['default']
     PaymentHead: typeof import('./src/components/payment/PaymentHead.vue')['default']
     Recommend: typeof import('./src/components/home/Recommend.vue')['default']
     RecommendBusiness: typeof import('./src/components/home/RecommendBusiness.vue')['default']

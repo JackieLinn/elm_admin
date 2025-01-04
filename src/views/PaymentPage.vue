@@ -22,6 +22,8 @@ const togglePayment = (payment: 'ALiPay' | 'WeChatPay') => {
   }
 };
 
+const isFoodListVisible = ref(false);
+
 const businessInfo = ref<OrdersBusinessVO | null>({});
 const foodInfo = ref<OrdersFoodVO[]>([]);
 
@@ -91,11 +93,14 @@ onMounted(() => {
   <div class="flex justify-between items-center p-[4vw] text-[#666] text-[4.5vw]">
     <span class="flex">
       {{ businessInfo.businessName }}
-      <i-octicon-triangle-down-24 class="ml-[-2vw] mt-[0.5vw] align-[center]"/>
+      <i-octicon-triangle-down-24
+          @click="isFoodListVisible = !isFoodListVisible"
+          class="ml-[-2vw] mt-[0.5vw] align-[center] cursor-pointer"
+      />
     </span>
     <span class="text-[orangered]">¥ {{ businessInfo.totalPrice }}</span>
   </div>
-  <div class="w-full">
+  <div class="w-full" v-show="isFoodListVisible">
     <div v-for="(food, index) in foodInfo" :key="index" class="flex justify-between items-center px-[4vw] py-[1vw]">
       <span class="text-[3.5vw] text-[#666]">{{ food.foodName }} x {{ food.quantity }}</span>
       <span class="text-[3.5vw] text-[#666]">¥ {{ food.foodPrice * food.quantity }}</span>

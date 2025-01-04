@@ -13,6 +13,7 @@ const router = createRouter({
     {name: 'order', path: '/order', component: () => import('@/views/OrderPage.vue')},
     {name: 'mine', path: '/mine', component: () => import('@/views/MinePage.vue')},
     {name: 'payment', path: '/payment', component: () => import('@/views/PaymentPage.vue')},
+    {name: 'orderList', path: '/orderList', component: () => import('@/views/OrderListPage.vue')},
   ],
 })
 
