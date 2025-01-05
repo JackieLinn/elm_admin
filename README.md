@@ -2,6 +2,8 @@
 
 软件工程中级实训饿了么项目Vue3前端仓库
 
+本项目基于Vue3 + TypeScript + Element-Plus + Vue-Router + Pinia + Axios + UnoCSS构建，同时导入配置，有自动导包和自动导入图标功能。后端项目: [elm_springboot3](https://github.com/JackieLin2004/elm_springboot3)
+
 This template should help get you started developing with Vue 3 in Vite.
 
 ## Recommended IDE Setup
