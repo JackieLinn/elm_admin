@@ -26,13 +26,13 @@ router.beforeEach((to, from, next) => {
     next('/home');
     return;
   }
-  // 如果用户未登录且访问非登录页面，则重定向到登录页
-  if (isUnauthorized && to.name !== 'login') {
+  // 如果用户未登录且访问非登录、注册或重置页面以外的页面，则重定向到登录页
+  if (isUnauthorized && !['login', 'register', 'reset'].includes(to.name)) {
     next('/login');
     return;
   }
   // 允许其他路由跳转
   next();
-})
+});
 
 export default router
